@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity() {
         //Инициализация Тулбар
         toolbarMain = findViewById(R.id.toolbarMain)
         setSupportActionBar(toolbarMain)
-        title = " Контакты ROOM"
+        title = " Контакты     ROOM"
         toolbarMain.subtitle = " Вер.1.Главная страница"
         toolbarMain.setLogo(R.drawable.db)
 
@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         saveBTN.setOnClickListener{
-            val person = Person(nameET.toString(), fonET.toString().toInt())
+            val person = Person(nameET.toString(), fonET.toString())
             addPerson(db!!,person)
             readDataBase(db!!)
         }
@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
     private  fun readDataBase(db:PersonDatabase) = GlobalScope.async {
         resaltTV.text = ""
         val list = db.getPersonDao().getAllPerson()
-        list.forEach { i -> resaltTV.append(i.name + i.fon.toString() + "/n") }
+        list.forEach { i -> resaltTV.append(i.name + i.fon + "/n") }
     }
 
 

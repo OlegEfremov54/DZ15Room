@@ -8,7 +8,7 @@ plugins {
 
 android {
     namespace = "com.example.dz15room"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.dz15room"
@@ -49,13 +49,16 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
     //Компоненты Room
     implementation(libs.androidx.room.runtime)
 
     //ksp("androidx.room:room-compiler:2.5.0")
     kapt("androidx.room:room-compiler:2.6.1")
+
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation(libs.androidx.room.ktx)
+
     //Компоненты жизненогоциклаandroidx.lifecycle:lifecycle
     implementation(libs.androidx.lifecycle.runtime.android)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
@@ -68,8 +71,11 @@ dependencies {
 
     //Компоненты котлин и корутины
     implementation(libs.kotlin.stdlib.jdk7)
-    api("org.jetbrains.kotlin:kotlin-coroutines-core:$rootProject.coroutines")
-    api("org.jetbrains.kotlin:kotlin-coroutines-android:$rootProject.coroutines")
+    //api("org.jetbrains.kotlin:kotlin-coroutines-core:1.7.3")
+    //api("org.jetbrains.kotlin:kotlin-coroutines-android:1.7.3")
+    implementation ("org.jetbrains.kotlin:kotlin-stdlib")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.2")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
 
 
 
