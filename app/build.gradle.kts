@@ -40,7 +40,6 @@ android {
 
 dependencies {
     implementation(libs.androidx.room.common)
-    val room_version = "2.6.1"
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

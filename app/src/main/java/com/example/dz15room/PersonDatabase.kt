@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 
 @Database(entities = [Person::class], version = 1, exportSchema = false)
 abstract class PersonDatabase: RoomDatabase() {
-    abstract fun getPersonDao():NameDao
+    abstract fun getPersonDao():PersonDao
     companion object {
         private var INSTANS: PersonDatabase? = null
         fun getDatabase (context: Context):PersonDatabase{
