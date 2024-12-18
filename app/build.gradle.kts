@@ -54,7 +54,7 @@ dependencies {
     implementation(libs.androidx.room.runtime)
 
     //ksp("androidx.room:room-compiler:2.5.0")
-    kapt("androidx.room:room-compiler:2.6.1")
+    kapt(libs.androidx.room.compiler)
 
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation(libs.androidx.room.ktx)
@@ -73,9 +73,9 @@ dependencies {
     implementation(libs.kotlin.stdlib.jdk7)
     //api("org.jetbrains.kotlin:kotlin-coroutines-core:1.7.3")
     //api("org.jetbrains.kotlin:kotlin-coroutines-android:1.7.3")
-    implementation ("org.jetbrains.kotlin:kotlin-stdlib")
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.2")
-    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9")
+    implementation (libs.kotlin.stdlib)
+    implementation (libs.kotlinx.coroutines.core)
+    implementation (libs.kotlinx.coroutines.android)
 
 
 
