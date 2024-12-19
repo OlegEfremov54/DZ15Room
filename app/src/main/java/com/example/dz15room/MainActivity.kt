@@ -1,6 +1,7 @@
 package com.example.dz15room
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
@@ -68,14 +69,30 @@ class MainActivity : AppCompatActivity() {
 
 // Функция добавления персоны
     private  fun addPerson (db:PersonDatabase, person:Person) = GlobalScope.async {
+    try {
         db.getPersonDao().insert(person)
+        Log.d("MainActivity", "Person added: Name=${person.name}, Phone=${person.fon}")
+    } catch (e: Exception) {
+        Log.e("MainActivity", "Error adding person: ${e.message}", e)
+    }
+
     }
 
     private  fun readDataBase(db:PersonDatabase) = GlobalScope.async {
-        resaltTV.text = ""
-        val list = db.getPersonDao().getAllPerson()
-        list.forEach { i -> resaltTV.append(i.name + i.fon + "/n") }
+        try {
+            val list = db.getPersonDao().getAllPerson()
+            Log.d("MainActivity", "Database read: Found ${list.size} persons")
+            resaltTV.text = ""
+            list.forEach { i ->
+                resaltTV.append("${i.name} ${i.fon}\n")
+                Log.d("MainActivity", "Person: Name=${i.name}, Phone=${i.fon}")
+            }
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error reading database: ${e.message}", e)
+        }
     }
+
+
 
 
 
