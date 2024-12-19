@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.room.Room
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
@@ -20,14 +21,13 @@ import kotlinx.coroutines.async
 @OptIn(DelicateCoroutinesApi::class)
 class MainActivity : AppCompatActivity() {
     private lateinit var toolbarMain: Toolbar
-    var db: PersonDatabase? = null
-    private lateinit var nameET:EditText
-    private lateinit var fonET:EditText
-    private lateinit var saveBTN:Button
-    private lateinit var resaltTV:TextView
+    private var db: PersonDatabase? = null
+    private lateinit var nameET: EditText
+    private lateinit var fonET: EditText
+    private lateinit var saveBTN: Button
+    private lateinit var resaltTV: TextView
 
-
-    override  fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
@@ -48,72 +48,74 @@ class MainActivity : AppCompatActivity() {
         //Инициируем БД
         db = PersonDatabase.getDatabase(context = this)
         readDataBase(db!!)
-
     }
 
     override fun onResume() {
         super.onResume()
+
+
         saveBTN.setOnClickListener {
-            val name = nameET.text.toString()
-            val phone = fonET.text.toString()
-
-            if (name.isNotBlank() && phone.isNotBlank()) {
-                val person = Person(name, phone)
-                addPerson(db!!, person)
-                readDataBase(db!!)
-            } else {
-                Toast.makeText(this, "Введите имя и телефон!", Toast.LENGTH_SHORT).show()
-            }
+            setUserData()
         }
     }
 
-// Функция добавления персоны
-    private  fun addPerson (db:PersonDatabase, person:Person) = GlobalScope.async {
-    try {
-        db.getPersonDao().insert(person)
-        Log.d("MainActivity", "Person added: Name=${person.name}, Phone=${person.fon}")
-    } catch (e: Exception) {
-        Log.e("MainActivity", "Error adding person: ${e.message}", e)
-    }
+    private fun setUserData() {
+        val name = nameET.text.toString()
+        val fon = fonET.text.toString()
+       if (name.isNotBlank() && fon.isNotBlank()) {
+            val person = Person(name = name, fon = fon)
 
-    }
-
-    private  fun readDataBase(db:PersonDatabase) = GlobalScope.async {
-        try {
-            val list = db.getPersonDao().getAllPerson()
-            Log.d("MainActivity", "Database read: Found ${list.size} persons")
-            resaltTV.text = ""
-            list.forEach { i ->
-                resaltTV.append("${i.name} ${i.fon}\n")
-                Log.d("MainActivity", "Person: Name=${i.name}, Phone=${i.fon}")
+            db?.let { database ->
+                addPerson(database, person)
+                readDataBase(database)
             }
-        } catch (e: Exception) {
-            Log.e("MainActivity", "Error reading database: ${e.message}", e)
+
+       } else {
+            Toast.makeText(this, "Введите имя и телефон!", Toast.LENGTH_SHORT).show()
         }
     }
-
-
-
-
 
     // Активация Меню
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_main,menu)
+        menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
+        when (item.itemId) {
             R.id.infoMenuMain -> {
-                Toast.makeText(applicationContext, "Автор Ефремов О.В. Создан 17.12.2024",
-                    Toast.LENGTH_LONG).show()
+
+
+                Toast.makeText(
+                    applicationContext, "Автор Ефремов О.В. Создан 17.12.2024",
+                    Toast.LENGTH_LONG
+                ).show()
             }
-            R.id.exitMenuMain ->{
-                Toast.makeText(applicationContext, "Работа приложения завершена",
-                    Toast.LENGTH_LONG).show()
+
+            R.id.exitMenuMain -> {
+                Toast.makeText(
+                    applicationContext, "Работа приложения завершена",
+                    Toast.LENGTH_LONG
+                ).show()
                 finishAffinity()
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun addPerson(db: PersonDatabase, person: Person) = GlobalScope.async {
+
+            db.getPersonDao().insert(person)
+
+    }
+
+    private fun readDataBase(db: PersonDatabase) = GlobalScope.async {
+
+            val list = db.getPersonDao().getAllPerson()
+            resaltTV.text = ""
+            list.forEach { i ->
+                resaltTV.append("${i.name} ${i.fon}\n")
+            }
+
     }
 }

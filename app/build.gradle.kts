@@ -4,6 +4,7 @@ plugins {
     id("kotlin-kapt")
     //id("com.google.devtools.ksp") version "2.0.21-1.0.27" apply false
     //id("com.google.devtools.ksp")
+    //id("com.google.devtools.ksp") version "1.9.0"
 }
 
 android {
@@ -50,14 +51,46 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    //Компоненты Room
-    implementation(libs.androidx.room.runtime)
-
     //ksp("androidx.room:room-compiler:2.5.0")
     kapt(libs.androidx.room.compiler)
 
+    val room_version = "2.6.1"
+
+    implementation("androidx.room:room-runtime:$room_version")
+
+    // If this project uses any Kotlin source, use Kotlin Symbol Processing (KSP)
+    // See Add the KSP plugin to your project
+    //ksp("androidx.room:room-compiler:2.5.0")
+    // If this project only uses Java source, use the Java annotationProcessor
+    // No additional plugins are necessary
+    annotationProcessor("androidx.room:room-compiler:$room_version")
+
     // optional - Kotlin Extensions and Coroutines support for Room
-    implementation(libs.androidx.room.ktx)
+    implementation("androidx.room:room-ktx:$room_version")
+
+    // optional - RxJava2 support for Room
+    implementation("androidx.room:room-rxjava2:$room_version")
+
+    // optional - RxJava3 support for Room
+    implementation("androidx.room:room-rxjava3:$room_version")
+
+    // optional - Guava support for Room, including Optional and ListenableFuture
+    implementation("androidx.room:room-guava:$room_version")
+
+    // optional - Test helpers
+    testImplementation("androidx.room:room-testing:$room_version")
+
+    // optional - Paging 3 Integration
+    implementation("androidx.room:room-paging:$room_version")
+
+
+
+
+    //Компоненты Room
+    //implementation(libs.androidx.room.runtime)
+
+    // optional - Kotlin Extensions and Coroutines support for Room
+    //implementation(libs.androidx.room.ktx)
 
     //Компоненты жизненогоциклаandroidx.lifecycle:lifecycle
     implementation(libs.androidx.lifecycle.runtime.android)
@@ -73,9 +106,11 @@ dependencies {
     implementation(libs.kotlin.stdlib.jdk7)
     //api("org.jetbrains.kotlin:kotlin-coroutines-core:1.7.3")
     //api("org.jetbrains.kotlin:kotlin-coroutines-android:1.7.3")
-    implementation (libs.kotlin.stdlib)
-    implementation (libs.kotlinx.coroutines.core)
-    implementation (libs.kotlinx.coroutines.android)
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.2")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.2")
+    //implementation (libs.kotlin.stdlib)
+    //implementation (libs.kotlinx.coroutines.core)
+    //implementation (libs.kotlinx.coroutines.android)
 
 
 
