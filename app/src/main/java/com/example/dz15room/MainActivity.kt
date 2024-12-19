@@ -10,12 +10,13 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 
 
 
+@OptIn(DelicateCoroutinesApi::class)
 class MainActivity : AppCompatActivity() {
     private lateinit var toolbarMain: Toolbar
     var db: PersonDatabase? = null
@@ -51,10 +52,17 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        saveBTN.setOnClickListener{
-            val person = Person(nameET.toString(), fonET.toString())
-            addPerson(db!!,person)
-            readDataBase(db!!)
+        saveBTN.setOnClickListener {
+            val name = nameET.text.toString()
+            val phone = fonET.text.toString()
+
+            if (name.isNotBlank() && phone.isNotBlank()) {
+                val person = Person(name, phone)
+                addPerson(db!!, person)
+                readDataBase(db!!)
+            } else {
+                Toast.makeText(this, "Введите имя и телефон!", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
