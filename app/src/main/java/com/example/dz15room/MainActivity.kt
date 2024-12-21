@@ -11,11 +11,14 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
-
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 @OptIn(DelicateCoroutinesApi::class)
@@ -65,10 +68,15 @@ class MainActivity : AppCompatActivity() {
        if (name.isNotBlank() && fon.isNotBlank()) {
             val person = Person(name = name, fon = fon)
 
-            db?.let { database ->
-                addPerson(database, person)
-                readDataBase(database)
-            }
+           db?.let { database ->
+               // Используем lifecycleScope для асинхронных операций
+               lifecycleScope.launch {
+                   addPerson(database, person)
+                   readDataBase(database)
+                   //nameET.text = ""
+
+               }
+           }
 
        } else {
             Toast.makeText(this, "Введите имя и телефон!", Toast.LENGTH_SHORT).show()
@@ -83,15 +91,19 @@ class MainActivity : AppCompatActivity() {
 
     }
 //Функция вывода на экран  в поле РезалтТехст Виев базы данных
-    private fun readDataBase(db: PersonDatabase) = GlobalScope.async {
+private fun readDataBase(db: PersonDatabase) {
+    lifecycleScope.launch {
+        val list = db?.getPersonDao()?.getAllPerson() ?: emptyList()
 
-            val list = db.getPersonDao().getAllPerson()
+        // Обновление UI происходит на главном потоке
+        withContext(Dispatchers.Main) {
             resaltTV.text = ""
             list.forEach { i ->
                 resaltTV.append("${i.name} ${i.fon}\n")
             }
-
+        }
     }
+}
     // Активация Меню
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
