@@ -73,6 +73,9 @@ private fun setUserData() {
             lifecycleScope.launch(Dispatchers.IO) {
                 addPerson(database, person)
                 readDataBase(database)
+                //очищаекм поля ввода  для нового ввода
+                nameET.text.clear()
+                fonET.text.clear()
             }
         }
     } else {
