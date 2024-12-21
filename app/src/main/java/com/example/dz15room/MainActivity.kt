@@ -62,48 +62,44 @@ class MainActivity : AppCompatActivity() {
         }
     }
 // Обработка нажатия кнопки
-    private fun setUserData() {
-        val name = nameET.text.toString()
-        val fon = fonET.text.toString()
-       if (name.isNotBlank() && fon.isNotBlank()) {
-            val person = Person(name = name, fon = fon)
+private fun setUserData() {
+    val name = nameET.text.toString()
+    val fon = fonET.text.toString()
+    if (name.isNotBlank() && fon.isNotBlank()) {
+        val person = Person(name = name, fon = fon)
 
-           db?.let { database ->
-               // Используем lifecycleScope для асинхронных операций
-               lifecycleScope.launch {
-                   addPerson(database, person)
-                   readDataBase(database)
-                   //nameET.text = ""
-
-               }
-           }
-
-       } else {
-            Toast.makeText(this, "Введите имя и телефон!", Toast.LENGTH_SHORT).show()
+        db?.let { database ->
+            // Используем lifecycleScope для асинхронных операций
+            lifecycleScope.launch(Dispatchers.IO) {
+                addPerson(database, person)
+                readDataBase(database)
+            }
         }
+    } else {
+        Toast.makeText(this, "Введите имя и телефон!", Toast.LENGTH_SHORT).show()
+    }
+}
+
+    // Добавление персоны в базу данных
+    private suspend fun addPerson(db: PersonDatabase, person: Person) {
+        // Переносим операцию в фоновый поток с помощью launch с Dispatchers.IO
+        db.getPersonDao().insert(person)
     }
 
+    // Чтение данных из базы данных и обновление UI
+    private fun readDataBase(db: PersonDatabase) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val list = db.getPersonDao().getAllPerson() ?: emptyList()
 
-//Добавление персоны в список персон
-    private fun addPerson(db: PersonDatabase, person: Person) = GlobalScope.async {
-
-            db.getPersonDao().insert(person)
-
-    }
-//Функция вывода на экран  в поле РезалтТехст Виев базы данных
-private fun readDataBase(db: PersonDatabase) {
-    lifecycleScope.launch {
-        val list = db?.getPersonDao()?.getAllPerson() ?: emptyList()
-
-        // Обновление UI происходит на главном потоке
-        withContext(Dispatchers.Main) {
-            resaltTV.text = ""
-            list.forEach { i ->
-                resaltTV.append("${i.name} ${i.fon}\n")
+            // Обновление UI происходит на главном потоке
+            withContext(Dispatchers.Main) {
+                resaltTV.text = ""
+                list.forEach { i ->
+                    resaltTV.append("${i.name} ${i.fon}\n")
+                }
             }
         }
     }
-}
     // Активация Меню
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
