@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         db = PersonDatabase.getDatabase(context = this)
         readDataBase(db!!)
     }
-
+// Он резуме
     override fun onResume() {
         super.onResume()
 
@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
             setUserData()
         }
     }
-
+// Обработка нажатия кнопки
     private fun setUserData() {
         val name = nameET.text.toString()
         val fon = fonET.text.toString()
@@ -75,6 +75,23 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
+//Добавление персоны в список персон
+    private fun addPerson(db: PersonDatabase, person: Person) = GlobalScope.async {
+
+            db.getPersonDao().insert(person)
+
+    }
+//Функция вывода на экран  в поле РезалтТехст Виев базы данных
+    private fun readDataBase(db: PersonDatabase) = GlobalScope.async {
+
+            val list = db.getPersonDao().getAllPerson()
+            resaltTV.text = ""
+            list.forEach { i ->
+                resaltTV.append("${i.name} ${i.fon}\n")
+            }
+
+    }
     // Активация Меню
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
@@ -101,21 +118,5 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun addPerson(db: PersonDatabase, person: Person) = GlobalScope.async {
-
-            db.getPersonDao().insert(person)
-
-    }
-
-    private fun readDataBase(db: PersonDatabase) = GlobalScope.async {
-
-            val list = db.getPersonDao().getAllPerson()
-            resaltTV.text = ""
-            list.forEach { i ->
-                resaltTV.append("${i.name} ${i.fon}\n")
-            }
-
     }
 }
